@@ -1,16 +1,65 @@
 ---
-
+import BestWishes from "../components/bestWishes/BestWishes.astro";
+import CoupleProfile from "../components/coupleProfile/CoupleProfile.astro";
+import EventSchedule from "../components/eventSchedule/EventSchedule.astro";
+import FrontCover from "../components/frontCover/FrontCover.astro";
+import FrontDecorator from "../components/frontDecorator/FrontDecorator.astro";
+import GallerySection from "../components/gallery/gallerySection/GallerySection.astro";
+import OverlayImageSeparator from "../components/overlayImageSeparator/OverlayImageSeparator.astro";
+import RsvpSection from "../components/rsvpSection/RsvpSection.astro";
+import SaveTheDateSection from "../components/saveTheDateSection/SaveTheDateSection.astro";
+import Verse from "../components/verse/Verse.astro";
+import WishesToUs from "../components/wishesToUs/WishesToUs.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout>
+  <div id="main-wrap" class="cover no-scroll">
+    <div
+      class="cover main-page style_minimalist font-rosemary_jasmine-title"
+      style="background-color:#fffbed"
+    >
+      <div
+        class="layout-cover cover animate__animated layout_style2 animate__fadeIn animate__delay-1s"
+        style="background-color:#fffbed"
+      >
+        <div id="wrapperUndangan">
+
+          <FrontDecorator/>
+
+          <div class="scrollableUndangan" id="contentscroll">
+            
+			<FrontCover/>
+
+            <div
+              class="content-layout cover"
+              style='background-image: url("https://invitera.site/files/themes/43/bf9ad3c56e064f6b70816e55def9f59d.png");background-repeat: repeat-y;background-size: 100%;background-color:#fffbed'
+            >
+              <Verse />
+
+              <CoupleProfile />
+
+              <EventSchedule />
+
+              <RsvpSection />
+
+              <SaveTheDateSection />
+
+              <!-- Display the countdown timer in an element -->
+              <p id="demo"></p>
+
+              <script is:inline src="/js/countDown.js"></script>
+
+              <GallerySection />
+
+              <WishesToUs />
+
+              <BestWishes />
+			  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

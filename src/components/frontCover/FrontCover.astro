@@ -1,0 +1,53 @@
+<div class="content-layout cover">
+  <style>
+    #slider {
+      opacity: 1;
+      transition: opacity 1s;
+    }
+
+    #slider.fadeOut {
+      opacity: 0;
+    }
+  </style>
+
+  <div style="position:relative">
+    <img id="slider" />
+  </div>
+
+  <button
+    onclick="window.location.href='#rsvp'"
+    id="button-open"
+    type="button"
+    class="btn btn-outline-dark rounded-pill undefined bottom_style animate__infinite animate__animated animate__flash animate__slower"
+    style="color: rgb(255, 255, 255); border: 2px solid rgb(255, 255, 255); animation-delay: 0.6s;text-align: center;"
+    >RSVP
+  </button>
+
+  <script>
+    var imgArray = [
+      "https://invitera.site/files/event/159/81a63c37a85185ba0e0451a811c6e0ec.png",
+      "https://invitera.site/files/event/159/4e1aaa2249357a0add87d848bfa01d86.png",
+      "https://invitera.site/files/event/159/76695199faeb1cc0944da8dc8a61774b.png",
+    ];
+    var totimg = 3;
+    var curIndex = 0;
+    var imgDuration = 5000;
+    if (totimg < 2) {
+      imgDuration = 10000000000000000;
+    }
+
+    function slideShow() {
+      document.getElementById("slider").className += "fadeOut";
+      setTimeout(function () {
+        document.getElementById("slider").src = imgArray[curIndex];
+        document.getElementById("slider").className = "";
+      }, 1000);
+      curIndex++;
+      if (curIndex == imgArray.length) {
+        curIndex = 0;
+      }
+      setTimeout(slideShow, imgDuration);
+    }
+    slideShow();
+  </script>
+</div>

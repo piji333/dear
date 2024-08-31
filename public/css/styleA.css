@@ -1,0 +1,91 @@
+.sectitle {
+  font-family: "Imperial Script", cursive;
+}
+.countstyle {
+  font-family: "DM Serif Display", serif;
+  color: #906633;
+}
+.btnstyle {
+  font-family: "Montserrat", sans-serif;
+}
+.basecolour {
+  color: #906633;
+  text-transform: uppercase;
+}
+
+.guestcolor {
+  color: #ffffff;
+}
+
+.jusec {
+  color: #906633;
+}
+
+.rundown .container {
+  background: #d1c18240;
+  border: 1px solid #efe7d7;
+}
+
+.boxhead {
+  color: ;
+}
+
+.blink {
+  animation: blink 1s steps(1, end) infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.scrollFade {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.scrollFade--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scrollFade--visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.scrollFade--animate {
+  transition: opacity 1s ease-in-out;
+}
+
+.cssanimation,
+.cssanimation span {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+
+.cssanimation span {
+  display: inline-block;
+}
+
+.fadeInBottom {
+  animation-name: fadeInBottom;
+}
+@keyframes fadeInBottom {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+  }
+}

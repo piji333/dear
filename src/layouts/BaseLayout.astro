@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Wilson & Jovita</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimal-ui"
+    />
+    <meta
+      data-hid="keywords"
+      name="keywords"
+      content="undangan pernikahan, undangan murah, buat undangan online, web nikah, website pernikahan, covid, unik, simple, web undangan online, design undangan wedding, wedding invitation, wedding invitation builder platform,  wedding, website undangan pernikahan"
+    />
+    <meta data-hid="charset" charset="utf-8" />
+    <meta
+      data-hid="mobile-web-app-capable"
+      name="mobile-web-app-capable"
+      content="yes"
+    />
+    <meta
+      data-hid="apple-mobile-web-app-title"
+      name="apple-mobile-web-app-title"
+      content="Invitera - Website Undangan Pernikahan"
+    />
+    <meta data-hid="description" name="description" content="" />
+    <meta property="og:type" content="invitation" />
+    <meta property="og:url" content="https://invitera.site/wilsonjovita" />
+    <meta
+      property="og:image"
+      content="https://invitera.site/files/event/159/760be3886e24fd23dd6dc62bf5d3bfc5.png"
+    />
+    <meta property="og:description" content="" />
+    <meta property="og:title" content="The Wedding of Wilson & Jovita" />
+
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://invitera.site/icon-fav.png"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://invitera.site/assets/css/bootstrap.css?v=2068466370"
+    />
+    <link
+      rel="stylesheet"
+      href="https://invitera.site/assets/css/lightbox.min.css"
+    />
+    <link rel="stylesheet" href="https://invitera.site/assets/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://invitera.site/assets/css/responsive.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://invitera.site/assets/css/mod.css?1906626991"
+    />
+    <link
+      rel="stylesheet"
+      href="https://invitera.site/assets/css/custom.css?v=1527998988"
+    />
+    <link
+      data-hid="shortcut-icon"
+      rel="shortcut icon"
+      href="https://invitera.site/icons/icon_64x64.d64535.png"
+    />
+    <link
+      data-hid="apple-touch-icon"
+      rel="apple-touch-icon"
+      href="https://invitera.site/icons/icon_512x512.d64535.png"
+      sizes="512x512"
+    />
+    <link
+      rel="stylesheet"
+      href="https://invitera.site/assets/css/aos-styles.css"
+    />
+    <link rel="stylesheet" href="https://invitera.site/assets/css/aos.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Birthstone&family=Cormorant+Garamond&family=Dancing+Script&family=Great+Vibes&family=Imperial+Script&family=Libre+Bodoni&family=Macondo&family=Montserrat:wght@500&family=Nunito+Sans&family=Satisfy&family=Vujahday+Script&display=swap"
+      rel="stylesheet"
+    /><link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Cormorant+Garamond&family=Libre+Bodoni&family=Macondo&family=Montserrat:wght@500&family=Nunito+Sans&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="/css/styleA.css" />
+  </head>
+
+  <body style="color:#fff">
+    <link rel="stylesheet" href="/css/styleB.css" />
+
+    <div class="md-modal md-effect-12">
+      <div class="md-content content-modal">
+        <center>
+          <div class="btnstyle guestcolor">Dear Mr./Mrs./Ms.</div>
+          <div class="sectitle guestcolor" style="font-size: 1.75rem;">
+            Guest Name
+          </div>
+        </center>
+        <button class="md-close btnstyle" id="fixedbutton"
+          >OPEN INVITATION</button
+        >
+        <div></div>
+      </div>
+    </div>
+
+    <div class="md-overlay"></div>
+
+    <slot />
+
+    <script
+      is:inline
+      src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"
+    ></script>
+    <script is:inline src="/js/openInvitation.js" id="rendered-js"></script>
+    <script is:inline src="https://invitera.site/assets/js/aos.js"></script>
+    <script>
+      AOS.init({
+        easing: "ease-in-out-sine",
+      });
+
+      document
+        .getElementById("contentscroll")
+        .addEventListener("scroll", scrollFade);
+
+      var fadeElements = document.getElementsByClassName("scrollFade");
+
+      function scrollFade() {
+        var viewportBottom = window.scrollY + window.innerHeight;
+        console.log("viewportBottom : " + viewportBottom);
+        for (var index = 0; index < fadeElements.length; index++) {
+          var element = fadeElements[index];
+          var rect = element.getBoundingClientRect();
+
+          var elementFourth = rect.height / 4;
+          var fadeInPoint = window.innerHeight - elementFourth;
+          var fadeOutPoint = -(rect.height / 2);
+          console.log("fadeOutPoint : " + fadeOutPoint);
+
+          if (rect.top <= fadeInPoint) {
+            element.classList.add("cssanimation");
+            element.classList.add("fadeInBottom");
+            element.classList.remove("scrollFade--hidden");
+          } else {
+            element.classList.remove("scrollFade--visible");
+            element.classList.add("scrollFade--hidden");
+          }
+
+          if (rect.top <= fadeOutPoint) {
+            //element.classList.remove('scrollFade--visible');
+            //element.classList.add('scrollFade--hidden');
+          }
+        }
+      }
+    </script>
+    <script is:inline src="https://code.jquery.com/jquery-3.5.1.min.js"
+    ></script>
+    <script
+      is:inline
+      src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"
+    ></script>
+    <script is:inline src="https://wowjs.uk/dist/wow.min.js"></script>
+    <script
+      is:inline
+      src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
+    ></script>
+    <script is:inline src="https://invitera.site/assets/js/lightbox.min.js"
+    ></script>
+    <script is:inline src="https://invitera.site/assets/js/script.js?490523715"
+    ></script>
+  </body>
+</html>
