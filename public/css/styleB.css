@@ -60,11 +60,21 @@ button {
   transition: all 0.3s;
 }
 
+/* Default background image (portrait orientation) */ 
 .md-show.md-effect-12 ~ .md-overlay {
-  background-image: url("https://invitera.site/files/event/159/b08a61d6fb66e34b6dea701c5c42f6dd.png");
+  /* background-image: url("https://invitera.site/files/event/159/cc9992e8cafafb6ab3bb1145e10413f5.png"); */
+  background-image: url("/images/IMG_2444.jpg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+/* Background image for aspect ratio greater than 1 (landscape orientation) */
+@media (min-aspect-ratio: 1/1) {
+  .md-show.md-effect-12 ~ .md-overlay {
+    /* background-image: url("https://invitera.site/files/event/159/b08a61d6fb66e34b6dea701c5c42f6dd.png"); */
+    background-image: url("/images/327A4059.JPEG");
+  }
 }
 
 .md-effect-12 .md-content h3,
