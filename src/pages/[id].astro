@@ -1,0 +1,213 @@
+---
+import BestWishes from "../components/bestWishes/BestWishes.astro";
+import CoupleProfile from "../components/coupleProfile/CoupleProfile.astro";
+import EventSchedule from "../components/eventSchedule/EventSchedule.astro";
+import FrontCover from "../components/frontCover/FrontCover.astro";
+import FrontDecorator from "../components/frontDecorator/FrontDecorator.astro";
+import GallerySection from "../components/gallery/gallerySection/GallerySection.astro";
+import RsvpSection from "../components/rsvpSection/RsvpSection.astro";
+import SaveTheDateSection from "../components/saveTheDateSection/SaveTheDateSection.astro";
+import Verse from "../components/verse/Verse.astro";
+import WishesToUs from "../components/wishesToUs/WishesToUs.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const { id } = Astro.params;
+---
+
+<BaseLayout>
+  <script type="module" define:vars={{ id }}>
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      get,
+      update,
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    // Firebase configuration (Replace with your actual config)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCtLpbWHZmZn3dCOILpt7JnWbj-KDqviGs",
+
+      authDomain: "dear-21512.firebaseapp.com",
+
+      projectId: "dear-21512",
+
+      storageBucket: "dear-21512.appspot.com",
+
+      messagingSenderId: "722019212853",
+
+      appId: "1:722019212853:web:646c85a21e5d1715015b7c",
+
+      measurementId: "G-GQL33WTE0B",
+
+      databaseURL:
+        "https://dear-21512-default-rtdb.asia-southeast1.firebasedatabase.app",
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Function to fetch RSVP data by unique_id
+    async function fetchRSVPByUniqueId(uniqueId) {
+      const rsvpRef = ref(db, `rsvps/${uniqueId}`);
+
+      try {
+        const snapshot = await get(rsvpRef);
+
+        if (snapshot.exists()) {
+            const data = snapshot.val(); // Get the data
+
+          const nameElements = document.querySelectorAll(".guest-name");
+          nameElements.forEach((element) => {
+            element.textContent = data.name;
+          });
+
+          return data;
+        } else {
+          console.error("No RSVP found with the given unique ID");
+        }
+      } catch (error) {
+        console.error("Error fetching RSVP: ", error.message);
+      }
+    }
+
+    function renderRSVPForm(rsvpData) {
+      const container = document.getElementById("rsvp-container");
+      container.innerHTML = ""; // Clear existing content
+
+      if (rsvpData.willJoin === null || rsvpData.willJoin === undefined) {
+        // Will join is undecided, show the form to make a decision
+        container.innerHTML = `
+      <p>Would you like to join the event?</p>
+      <input type="checkbox" id="joinCheckbox"> Yes, I will join<br>
+      <label for="guestsInput">Number of Guests:</label>
+      <input type="number" id="guestsInput" min="0" value="0" disabled><br>
+      <button id="submitRSVP">Submit</button>
+    `;
+
+        const joinCheckbox = document.getElementById("joinCheckbox");
+        const guestsInput = document.getElementById("guestsInput");
+        const submitButton = document.getElementById("submitRSVP");
+
+        joinCheckbox.addEventListener("change", () => {
+          guestsInput.disabled = !joinCheckbox.checked;
+        });
+
+        submitButton.addEventListener("click", async () => {
+          const willJoin = joinCheckbox.checked;
+          const numberOfGuests = willJoin ? parseInt(guestsInput.value, 10) : 0;
+          await updateRSVP(willJoin, numberOfGuests);
+        });
+      } else if (rsvpData.willJoin === false) {
+        // Will not join, show confirmation and option to change answer
+        container.innerHTML = `
+      <p>You have confirmed that you will not join the event.</p>
+      <button id="changeAnswer">Change Answer</button>
+    `;
+
+        const changeButton = document.getElementById("changeAnswer");
+        changeButton.addEventListener("click", () => {
+          renderRSVPForm({ willJoin: null }); // Reset form
+        });
+      } else if (rsvpData.willJoin === true) {
+        // Will join, show confirmation and option to change answer
+        container.innerHTML = `
+      <p>You have confirmed that you will join the event with ${rsvpData.numberOfGuest} guests.</p>
+      <button id="changeAnswer">Change Answer</button>
+    `;
+
+        const changeButton = document.getElementById("changeAnswer");
+        changeButton.addEventListener("click", () => {
+          renderRSVPForm({ willJoin: null }); // Reset form
+        });
+      }
+    }
+
+    // Function to update RSVP in Firebase
+    async function updateRSVP(willJoin, numberOfGuests) {
+      const uniqueId = id;
+      const rsvpRef = ref(db, `rsvps/${uniqueId}`);
+      try {
+        await update(rsvpRef, {
+          willJoin: willJoin,
+          numberOfGuest: numberOfGuests,
+        });
+        alert("RSVP updated successfully!");
+        renderRSVPForm({ willJoin, numberOfGuest: numberOfGuests });
+      } catch (error) {
+        console.error("Error updating RSVP:", error);
+        alert("There was an error updating your RSVP. Please try again.");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const rsvpData = await fetchRSVPByUniqueId(id);
+      renderRSVPForm(rsvpData);
+    });
+  </script>
+
+  <link rel="stylesheet" href="/css/styleB.css" />
+
+  <div class="md-modal md-effect-12">
+    <div class="md-content content-modal">
+      <center>
+        <div class="btnstyle guestcolor">Dear Mr./Mrs./Ms.</div>
+        <div class="sectitle guestcolor guest-name" style="font-size: 1.75rem;">
+          Guest Name
+        </div>
+      </center>
+      <button class="md-close btnstyle" id="fixedbutton">OPEN INVITATION</button
+      >
+      <div></div>
+    </div>
+  </div>
+
+  <div class="md-overlay"></div>
+
+  <div id="main-wrap" class="cover no-scroll">
+    <div
+      class="cover main-page style_minimalist font-rosemary_jasmine-title"
+      style="background-color:#fffbed"
+    >
+      <div
+        class="layout-cover cover animate__animated layout_style2 animate__fadeIn animate__delay-1s"
+        style="background-color:#fffbed"
+      >
+        <div id="wrapperUndangan">
+          <FrontDecorator />
+
+          <div class="scrollableUndangan" id="contentscroll">
+            <FrontCover />
+
+            <div
+              class="content-layout cover"
+              style='background-image: url("https://invitera.site/files/themes/43/bf9ad3c56e064f6b70816e55def9f59d.png");background-repeat: repeat-y;background-size: 100%;background-color:#fffbed'
+            >
+              <Verse />
+
+              <CoupleProfile />
+
+              <EventSchedule />
+
+              <RsvpSection />
+
+              <SaveTheDateSection />
+
+              <!-- Display the countdown timer in an element -->
+              <p id="demo"></p>
+
+              <script is:inline src="/js/countDown.js"></script>
+
+              <GallerySection />
+
+              <WishesToUs />
+
+              <BestWishes />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

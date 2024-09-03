@@ -104,24 +104,6 @@
   </head>
 
   <body style="color:#fff">
-    <link rel="stylesheet" href="/css/styleB.css" />
-
-    <div class="md-modal md-effect-12">
-      <div class="md-content content-modal">
-        <center>
-          <div class="btnstyle guestcolor">Dear Mr./Mrs./Ms.</div>
-          <div class="sectitle guestcolor" style="font-size: 1.75rem;">
-            Guest Name
-          </div>
-        </center>
-        <button class="md-close btnstyle" id="fixedbutton"
-          >OPEN INVITATION</button
-        >
-        <div></div>
-      </div>
-    </div>
-
-    <div class="md-overlay"></div>
 
     <slot />
 
@@ -144,7 +126,7 @@
 
       function scrollFade() {
         var viewportBottom = window.scrollY + window.innerHeight;
-        console.log("viewportBottom : " + viewportBottom);
+        // console.log("viewportBottom : " + viewportBottom);
         for (var index = 0; index < fadeElements.length; index++) {
           var element = fadeElements[index];
           var rect = element.getBoundingClientRect();
@@ -152,7 +134,7 @@
           var elementFourth = rect.height / 4;
           var fadeInPoint = window.innerHeight - elementFourth;
           var fadeOutPoint = -(rect.height / 2);
-          console.log("fadeOutPoint : " + fadeOutPoint);
+          // console.log("fadeOutPoint : " + fadeOutPoint);
 
           if (rect.top <= fadeInPoint) {
             element.classList.add("cssanimation");

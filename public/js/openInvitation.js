@@ -8,7 +8,7 @@ $(function () {
 
   $(".md-close").on("click", function () {
     $(".md-modal").removeClass("md-show");
-    console.log("clicked....");
+    // console.log("clicked....");
     track.play();
   });
 });
