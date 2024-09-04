@@ -83,29 +83,62 @@ const { id } = Astro.params;
         // Will join is undecided, show the form to make a decision
         container.innerHTML = `
       <p>Would you like to join the event?</p>
-      <input type="checkbox" id="joinCheckbox"> Yes, I will join<br><br>
+      <label>
+        <input type="radio" name="joinEvent" value="yes" id="joinYes"> Yes, I will join
+      </label><br>
 
-      <label for="guestsInput">Number of Guests:</label><br>
-      <input class="centerInput" type="number" id="guestsInput" min="0" value="${rsvpData?.numberOfGuest || 0}" disabled><br><br>
+      <label>
+        <input type="radio" name="joinEvent" value="no" id="joinNo"> No, I will not join
+      </label><br><br>
 
-      <label for="guestEmail">Email:</label><br>
-      <input class="centerInput" type="email" id="guestEmail" value="${rsvpData?.email || ''}" disabled><br><br>
+      <div id="guestsNumberInput" style="display:none;">
+        <label for="guestsInput">Number of Guests:</label><br>
+        <input class="centerInput" type="number" id="guestsInput" min="0" value="${rsvpData?.numberOfGuest || 0}" disabled><br><br>
+      </div>
+
+      <div id="guestEmailInput" style="display:none;">
+        <label for="guestEmail">Email:</label><br>
+        <input class="centerInput" type="email" id="guestEmail" value="${rsvpData?.email || ''}" disabled><br><br>
+      </div>
+
 
       <button id="submitRSVP">Submit</button>
     `;
 
-        const joinCheckbox = document.getElementById("joinCheckbox");
+        // const joinCheckbox = document.getElementById("joinCheckbox");
         const guestsInput = document.getElementById("guestsInput");
         const guestEmail = document.getElementById("guestEmail");
         const submitButton = document.getElementById("submitRSVP");
 
-        joinCheckbox.addEventListener("change", () => {
-          guestsInput.disabled = !joinCheckbox.checked;
-          guestEmail.disabled = !joinCheckbox.checked;
+        
+        const radioButtons = document.querySelectorAll('input[name="joinEvent"]');
+
+        // Add event listener to each radio button
+        radioButtons.forEach((radio) => {
+          radio.addEventListener('change', () => {
+            // Get the selected value
+            const willJoinRadioValue = document.querySelector('input[name="joinEvent"]:checked').value;
+
+            guestsInput.disabled = !(willJoinRadioValue === "yes");
+            guestEmail.disabled = !(willJoinRadioValue === "yes");
+
+            const guestsNumberInputComponent = document.getElementById('guestsNumberInput');
+            const guestEmailInputComponent = document.getElementById('guestEmailInput');
+            // Toggle visibility based on the boolean value
+            if (willJoinRadioValue === "yes") {
+              guestsNumberInputComponent.style.display = 'block';  // Show the component
+              guestEmailInputComponent.style.display = 'block';  // Show the component
+            } else {
+              guestsNumberInputComponent.style.display = 'none';   // Hide the component
+              guestEmailInputComponent.style.display = 'none';   // Hide the component
+            }
+
+          });
         });
 
         submitButton.addEventListener("click", async () => {
-          const willJoin = joinCheckbox.checked;
+          const willJoinRadioValue = document.querySelector('input[name="joinEvent"]:checked').value;
+          const willJoin = willJoinRadioValue === "yes";
           const numberOfGuests = willJoin ? parseInt(guestsInput.value, 10) : 0;
           await updateRSVP(willJoin, numberOfGuests, guestEmail.value);
         });
