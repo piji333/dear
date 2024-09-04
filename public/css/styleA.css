@@ -1,3 +1,9 @@
+.centerInput {
+  text-align: center;
+  /* width: 200px; 
+  padding: 10px;
+  font-size: 16px; */
+}
 .sectitle {
   font-family: "Imperial Script", cursive;
 }

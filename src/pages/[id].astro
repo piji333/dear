@@ -62,6 +62,9 @@ const { id } = Astro.params;
           nameElements.forEach((element) => {
             element.textContent = data.name;
           });
+          document.querySelectorAll(".guest-pronoun").forEach((element) => {
+            element.textContent = data.pronoun;
+          });
 
           return data;
         } else {
@@ -80,24 +83,31 @@ const { id } = Astro.params;
         // Will join is undecided, show the form to make a decision
         container.innerHTML = `
       <p>Would you like to join the event?</p>
-      <input type="checkbox" id="joinCheckbox"> Yes, I will join<br>
-      <label for="guestsInput">Number of Guests:</label>
-      <input type="number" id="guestsInput" min="0" value="0" disabled><br>
+      <input type="checkbox" id="joinCheckbox"> Yes, I will join<br><br>
+
+      <label for="guestsInput">Number of Guests:</label><br>
+      <input class="centerInput" type="number" id="guestsInput" min="0" value="${rsvpData?.numberOfGuest || 0}" disabled><br><br>
+
+      <label for="guestEmail">Email:</label><br>
+      <input class="centerInput" type="email" id="guestEmail" value="${rsvpData?.email || ''}" disabled><br><br>
+
       <button id="submitRSVP">Submit</button>
     `;
 
         const joinCheckbox = document.getElementById("joinCheckbox");
         const guestsInput = document.getElementById("guestsInput");
+        const guestEmail = document.getElementById("guestEmail");
         const submitButton = document.getElementById("submitRSVP");
 
         joinCheckbox.addEventListener("change", () => {
           guestsInput.disabled = !joinCheckbox.checked;
+          guestEmail.disabled = !joinCheckbox.checked;
         });
 
         submitButton.addEventListener("click", async () => {
           const willJoin = joinCheckbox.checked;
           const numberOfGuests = willJoin ? parseInt(guestsInput.value, 10) : 0;
-          await updateRSVP(willJoin, numberOfGuests);
+          await updateRSVP(willJoin, numberOfGuests, guestEmail.value);
         });
       } else if (rsvpData.willJoin === false) {
         // Will not join, show confirmation and option to change answer
@@ -108,7 +118,8 @@ const { id } = Astro.params;
 
         const changeButton = document.getElementById("changeAnswer");
         changeButton.addEventListener("click", () => {
-          renderRSVPForm({ willJoin: null }); // Reset form
+          // renderRSVPForm({ willJoin: null }); // Reset form
+          renderRSVPForm({ ...rsvpData, willJoin: null,  }); // Reset form
         });
       } else if (rsvpData.willJoin === true) {
         // Will join, show confirmation and option to change answer
@@ -119,22 +130,23 @@ const { id } = Astro.params;
 
         const changeButton = document.getElementById("changeAnswer");
         changeButton.addEventListener("click", () => {
-          renderRSVPForm({ willJoin: null }); // Reset form
+          renderRSVPForm({ ...rsvpData, willJoin: null }); // Reset form
         });
       }
     }
 
     // Function to update RSVP in Firebase
-    async function updateRSVP(willJoin, numberOfGuests) {
+    async function updateRSVP(willJoin, numberOfGuests, guestEmail) {
       const uniqueId = id;
       const rsvpRef = ref(db, `rsvps/${uniqueId}`);
       try {
         await update(rsvpRef, {
           willJoin: willJoin,
           numberOfGuest: numberOfGuests,
+          email: guestEmail,
         });
         alert("RSVP updated successfully!");
-        renderRSVPForm({ willJoin, numberOfGuest: numberOfGuests });
+        renderRSVPForm({ willJoin, numberOfGuest: numberOfGuests, email: guestEmail });
       } catch (error) {
         console.error("Error updating RSVP:", error);
         alert("There was an error updating your RSVP. Please try again.");
@@ -152,7 +164,7 @@ const { id } = Astro.params;
   <div class="md-modal md-effect-12">
     <div class="md-content content-modal">
       <center>
-        <div class="btnstyle guestcolor">Dear Mr./Mrs./Ms.</div>
+        <div class="btnstyle guestcolor">Dear <span class="guest-pronoun">Mr./Mrs./Ms.</span></div>
         <div class="sectitle guestcolor guest-name" style="font-size: 1.75rem;">
           Guest Name
         </div>
@@ -201,9 +213,9 @@ const { id } = Astro.params;
 
               <GallerySection />
 
-              <WishesToUs />
+              <!-- <WishesToUs /> -->
 
-              <BestWishes />
+              <!-- <BestWishes /> -->
             </div>
           </div>
         </div>
