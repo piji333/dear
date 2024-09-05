@@ -63,7 +63,8 @@ button {
 /* Default background image (portrait orientation) */ 
 .md-show.md-effect-12 ~ .md-overlay {
   /* background-image: url("https://invitera.site/files/event/159/cc9992e8cafafb6ab3bb1145e10413f5.png"); */
-  background-image: url("/images/IMG_2444.jpg");
+  /* background-image: url("/images/IMG_0562.JPG"); */
+  /* background-image: url("/images/IMG_2444.jpg"); */
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -92,6 +93,6 @@ button {
 
 .content-modal {
   position: fixed;
-  bottom: 90px;
+  bottom: 190px;
   width: 100%;
 }

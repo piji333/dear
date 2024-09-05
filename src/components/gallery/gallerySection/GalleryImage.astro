@@ -1,0 +1,11 @@
+---
+const { imageUrl } = Astro.params;
+---
+
+<a href={imageUrl} data-lightbox="image-0">
+  <img
+    src={imageUrl}
+    style="padding:2px;width:50%;float:left"
+    class="scrollFade"
+  />
+</a>

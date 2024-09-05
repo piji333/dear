@@ -19,8 +19,18 @@
   text-transform: uppercase;
 }
 
-.guestcolor {
+.whitecolor {
   color: #ffffff;
+}
+.guestcolor {
+  /* color: #CBA274; */
+  color: #BB8A0C;
+}
+.groombridecolor {
+  color: #8D181B;
+}
+.pinkcolor {
+  color: #E6AC9D;
 }
 
 .jusec {
