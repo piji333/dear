@@ -79,16 +79,16 @@ const { id } = Astro.params;
       const container = document.getElementById("rsvp-container");
       container.innerHTML = ""; // Clear existing content
 
-      if (rsvpData.willJoin === null || rsvpData.willJoin === undefined) {
+      if (rsvpData.willJoin == null || rsvpData.willJoin == 'undefined') {
         // Will join is undecided, show the form to make a decision
         container.innerHTML = `
       <p>Would you like to join the event?</p>
       <label>
-        <input type="radio" name="joinEvent" value="yes" id="joinYes"> Yes, I will join
+        <input type="radio" name="joinEvent" value="true" id="joinYes"> Yes, I will join
       </label><br>
 
       <label>
-        <input type="radio" name="joinEvent" value="no" id="joinNo"> No, I will not join
+        <input type="radio" name="joinEvent" value="false" id="joinNo"> No, I will not join
       </label><br><br>
 
       <div id="guestsNumberInput" style="display:none;">
@@ -138,11 +138,11 @@ const { id } = Astro.params;
 
         submitButton.addEventListener("click", async () => {
           const willJoinRadioValue = document.querySelector('input[name="joinEvent"]:checked').value;
-          const willJoin = willJoinRadioValue === "yes";
+          const willJoin = willJoinRadioValue;
           const numberOfGuests = willJoin ? parseInt(guestsInput.value, 10) : 0;
           await updateRSVP(willJoin, numberOfGuests, guestEmail.value);
         });
-      } else if (rsvpData.willJoin === false) {
+      } else if (rsvpData.willJoin == "false") {
         // Will not join, show confirmation and option to change answer
         container.innerHTML = `
       <p>You have confirmed that you will not join the event.</p>
@@ -154,7 +154,7 @@ const { id } = Astro.params;
           // renderRSVPForm({ willJoin: null }); // Reset form
           renderRSVPForm({ ...rsvpData, willJoin: null,  }); // Reset form
         });
-      } else if (rsvpData.willJoin === true) {
+      } else if (rsvpData.willJoin == "true") {
         // Will join, show confirmation and option to change answer
         container.innerHTML = `
       <p>You have confirmed that you will join the event with ${rsvpData.numberOfGuest} guests.</p>
