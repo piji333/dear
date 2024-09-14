@@ -119,13 +119,13 @@ const { id } = Astro.params;
             // Get the selected value
             const willJoinRadioValue = document.querySelector('input[name="joinEvent"]:checked').value;
 
-            guestsInput.disabled = !(willJoinRadioValue === "yes");
-            guestEmail.disabled = !(willJoinRadioValue === "yes");
+            guestsInput.disabled = !(willJoinRadioValue === "true");
+            guestEmail.disabled = !(willJoinRadioValue === "true");
 
             const guestsNumberInputComponent = document.getElementById('guestsNumberInput');
             const guestEmailInputComponent = document.getElementById('guestEmailInput');
             // Toggle visibility based on the boolean value
-            if (willJoinRadioValue === "yes") {
+            if (willJoinRadioValue === "true") {
               guestsNumberInputComponent.style.display = 'block';  // Show the component
               guestEmailInputComponent.style.display = 'block';  // Show the component
             } else {
@@ -232,7 +232,7 @@ const { id } = Astro.params;
 
             <div
               class="content-layout cover"
-              style='background-image: url("https://invitera.site/files/themes/43/bf9ad3c56e064f6b70816e55def9f59d.png");background-repeat: repeat-y;background-size: 100%;background-color:#fffbed'
+              style='background-image: url("/images/background.png");background-repeat: repeat-y;background-size: 100%;background-color:#fffbed'
             >
               <Verse />
 
