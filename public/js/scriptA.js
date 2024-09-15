@@ -23,16 +23,16 @@ function playPause() {
     }
 }
 
-controlBtn.addEventListener("click", playPause);
-track.addEventListener("ended", function () {
-    controlBtn.className = "play";
-});
+// controlBtn.addEventListener("click", playPause);
+// track.addEventListener("ended", function () {
+//     controlBtn.className = "play";
+// });
 
-function changeImage() {
-    var image = document.getElementById('music_img');
-    if (image.src.match("music_off")) {
-        image.src = "/images/music_on.png";
-    } else {
-        image.src = "/images/music_off.png";
-    }
-}
+// function changeImage() {
+//     var image = document.getElementById('music_img');
+//     if (image.src.match("music_off")) {
+//         image.src = "/images/music_on.png";
+//     } else {
+//         image.src = "/images/music_off.png";
+//     }
+// }
