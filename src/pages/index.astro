@@ -6,6 +6,7 @@ import FrontCover from "../components/frontCover/FrontCover.astro";
 import FrontDecorator from "../components/frontDecorator/FrontDecorator.astro";
 import GallerySection from "../components/gallery/gallerySection/GallerySection.astro";
 import OverlayImageSeparator from "../components/overlayImageSeparator/OverlayImageSeparator.astro";
+import RsvpGeneral from "../components/rsvpSection/RsvpGeneral.astro";
 import RsvpSection from "../components/rsvpSection/RsvpSection.astro";
 import SaveTheDateSection from "../components/saveTheDateSection/SaveTheDateSection.astro";
 import Verse from "../components/verse/Verse.astro";
@@ -19,14 +20,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   <div class="md-modal md-effect-12">
     <div class="md-content content-modal">
       <center>
-        <div class="btnstyle whitecolor guestcolor">Dear Mr./Mrs./Ms.</div>
+        <!-- <div class="btnstyle whitecolor guestcolor">Dear Mr./Mrs./Ms.</div>
         <div class="sectitle guestcolor guest-name" style="font-size: 2.75rem;">
           Guest Name
-        </div>
+        </div> -->
 
-        <br>
-        <div class='btnstyle whitecolor groombridecolor'>We are delighted to invite you to our wedding</div>
-        <div class="sectitle groombridecolor" style="font-size: 2.75rem;">
+        <!-- <br> -->
+        <div class='btnstyle whitecolor guestcolor'>We are delighted<br>to invite you to our wedding</div>
+        <div class="sectitle guestcolor" style="font-size: 2.75rem;">
           Phuoc & Nghi
         </div>
       </center>
@@ -61,7 +62,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
               <EventSchedule />
 
-              <RsvpSection />
+              <RsvpGeneral />
 
               <SaveTheDateSection />
 

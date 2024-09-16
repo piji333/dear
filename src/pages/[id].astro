@@ -81,23 +81,23 @@ const { id } = Astro.params;
       if (rsvpData.willJoin == null || rsvpData.willJoin == "undefined") {
         // Will join is undecided, show the form to make a decision
         container.innerHTML = `
-      <p>Would you like to join the event?</p>
+      <p>Will you be able to join us for the ceremony?</p>
       <label>
-        <input type="radio" name="joinEvent" value="true" id="joinYes"> Yes, I will join the ceremony!
+        <input type="radio" name="joinEvent" value="true" id="joinYes"> Yes, I will gladly attend!
       </label><br>
 
       <label>
-        <input type="radio" name="joinEvent" value="false" id="joinNo"> No, but best wishes!
+        <input type="radio" name="joinEvent" value="false" id="joinNo"> No, I cannot but send my best wishes!
       </label><br><br>
 
       <div id="guestsNumberInput" style="display:none;">
         <label for="guestsInput">Number of Guests:</label><br>
-        <input class="centerInput" type="number" id="guestsInput" min="0" value="${rsvpData?.numberOfGuest || 0}" disabled><br><br>
+        <input class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="number" id="guestsInput" min="0" value="${rsvpData?.numberOfGuest || 0}" disabled><br><br>
       </div>
 
       <div id="guestEmailInput" style="display:none;">
         <label for="guestEmail">Email:</label><br>
-        <input class="centerInput" type="email" id="guestEmail" value="${rsvpData?.email || ""}" disabled><br><br>
+        <input class="centerInput"form-control btnstyle custom-form-control-paddingLeft type="email" id="guestEmail" value="${rsvpData?.email || ""}" disabled><br><br>
       </div>
      
 
@@ -108,7 +108,7 @@ const { id } = Astro.params;
 
       <div id="noteInput" style="display:none;">
         <label for="note">Note:</label><br>
-        <input class="centerInput" type="text" id="note" value="${rsvpData?.note || ""}" disabled><br><br>
+        <input class="centerInput"form-control btnstyle custom-form-control-paddingLeft type="text" id="note" value="${rsvpData?.note || ""}" disabled><br><br>
       </div>
 
 
