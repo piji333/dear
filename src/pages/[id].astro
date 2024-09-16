@@ -56,7 +56,7 @@ const { id } = Astro.params;
         const snapshot = await get(rsvpRef);
 
         if (snapshot.exists()) {
-            const data = snapshot.val(); // Get the data
+          const data = snapshot.val(); // Get the data
 
           const nameElements = document.querySelectorAll(".guest-name");
           nameElements.forEach((element) => {
@@ -79,16 +79,16 @@ const { id } = Astro.params;
       const container = document.getElementById("rsvp-container");
       container.innerHTML = ""; // Clear existing content
 
-      if (rsvpData.willJoin == null || rsvpData.willJoin == 'undefined') {
+      if (rsvpData.willJoin == null || rsvpData.willJoin == "undefined") {
         // Will join is undecided, show the form to make a decision
         container.innerHTML = `
       <p>Would you like to join the event?</p>
       <label>
-        <input type="radio" name="joinEvent" value="true" id="joinYes"> Yes, I will join
+        <input type="radio" name="joinEvent" value="true" id="joinYes"> Yes, I will join the ceremony!
       </label><br>
 
       <label>
-        <input type="radio" name="joinEvent" value="false" id="joinNo"> Sadly, I cannot make it
+        <input type="radio" name="joinEvent" value="false" id="joinNo"> No, but best wishes!
       </label><br><br>
 
       <div id="guestsNumberInput" style="display:none;">
@@ -98,7 +98,18 @@ const { id } = Astro.params;
 
       <div id="guestEmailInput" style="display:none;">
         <label for="guestEmail">Email:</label><br>
-        <input class="centerInput" type="email" id="guestEmail" value="${rsvpData?.email || ''}" disabled><br><br>
+        <input class="centerInput" type="email" id="guestEmail" value="${rsvpData?.email || ""}" disabled><br><br>
+      </div>
+     
+
+      <div id="vegetarianInput" style="display:none;">
+        <label for="vegetarian">Vegetarian </label>
+        <input type="checkbox" id="vegetarian"><br><br>
+      </div>
+
+      <div id="noteInput" style="display:none;">
+        <label for="note">Note:</label><br>
+        <input class="centerInput" type="text" id="note" value="${rsvpData?.note || ""}" disabled><br><br>
       </div>
 
 
@@ -108,58 +119,114 @@ const { id } = Astro.params;
         // const joinCheckbox = document.getElementById("joinCheckbox");
         const guestsInput = document.getElementById("guestsInput");
         const guestEmail = document.getElementById("guestEmail");
+        const vegetarian = document.getElementById("vegetarian");
+        const note = document.getElementById("note");
         const submitButton = document.getElementById("submitRSVP");
 
-        
-        const radioButtons = document.querySelectorAll('input[name="joinEvent"]');
+        // checkbox state for vegetarian
+        vegetarian.checked = rsvpData?.vegetarian;
+
+        const radioButtons = document.querySelectorAll(
+          'input[name="joinEvent"]'
+        );
 
         // Add event listener to each radio button
         radioButtons.forEach((radio) => {
-          radio.addEventListener('change', () => {
+          radio.addEventListener("change", () => {
             // Get the selected value
-            const willJoinRadioValue = document.querySelector('input[name="joinEvent"]:checked').value;
+            const willJoinRadioValue = document.querySelector(
+              'input[name="joinEvent"]:checked'
+            ).value;
 
             guestsInput.disabled = !(willJoinRadioValue === "true");
             guestEmail.disabled = !(willJoinRadioValue === "true");
+            vegetarian.disabled = !(willJoinRadioValue === "true");
+            note.disabled = !(willJoinRadioValue === "true");
 
-            const guestsNumberInputComponent = document.getElementById('guestsNumberInput');
-            const guestEmailInputComponent = document.getElementById('guestEmailInput');
+            const guestsNumberInputComponent =
+              document.getElementById("guestsNumberInput");
+            const guestEmailInputComponent =
+              document.getElementById("guestEmailInput");
+            const vegetarianInputComponent =
+              document.getElementById("vegetarianInput");
+            const noteInputComponent = document.getElementById("noteInput");
             // Toggle visibility based on the boolean value
             if (willJoinRadioValue === "true") {
-              guestsNumberInputComponent.style.display = 'block';  // Show the component
-              guestEmailInputComponent.style.display = 'block';  // Show the component
+              guestsNumberInputComponent.style.display = "block"; // Show the component
+              guestEmailInputComponent.style.display = "block"; // Show the component
+              vegetarianInputComponent.style.display = "block"; // Show the component
+              noteInputComponent.style.display = "block"; // Show the component
             } else {
-              guestsNumberInputComponent.style.display = 'none';   // Hide the component
-              guestEmailInputComponent.style.display = 'none';   // Hide the component
+              guestsNumberInputComponent.style.display = "none"; // Hide the component
+              guestEmailInputComponent.style.display = "none"; // Hide the component
+              vegetarianInputComponent.style.display = "none"; // Hide the component
+              noteInputComponent.style.display = "none"; // Hide the component
             }
-
           });
         });
 
         submitButton.addEventListener("click", async () => {
-          const willJoinRadioValue = document.querySelector('input[name="joinEvent"]:checked').value;
+          const willJoinRadioValue = document.querySelector(
+            'input[name="joinEvent"]:checked'
+          ).value;
           const willJoin = willJoinRadioValue;
           const numberOfGuests = willJoin ? parseInt(guestsInput.value, 10) : 0;
-          await updateRSVP(willJoin, numberOfGuests, guestEmail.value);
+          await updateRSVP(
+            willJoin,
+            numberOfGuests,
+            guestEmail.value,
+            vegetarian.checked,
+            note.value
+          );
         });
       } else if (rsvpData.willJoin == "false") {
         // Will not join, show confirmation and option to change answer
         container.innerHTML = `
-      <p>You have confirmed that you will not join the event.</p>
-      <button id="changeAnswer">Change Answer</button>
+      <p>Thank you for letting us know you will be cheering for us from afar!</p>
+      <button id="changeAnswer">Change Response</button>
     `;
 
         const changeButton = document.getElementById("changeAnswer");
         changeButton.addEventListener("click", () => {
-          // renderRSVPForm({ willJoin: null }); // Reset form
-          renderRSVPForm({ ...rsvpData, willJoin: null,  }); // Reset form
+          renderRSVPForm({ ...rsvpData, willJoin: null }); // Reset form
         });
       } else if (rsvpData.willJoin == "true") {
         // Will join, show confirmation and option to change answer
-        container.innerHTML = `
-      <p>You have confirmed that you will join the event with ${rsvpData.numberOfGuest} guests.</p>
-      <button id="changeAnswer">Change Answer</button>
-    `;
+        const wordList = [
+          `
+      <p>Thank you for accepting our invitation. </p>
+          `,
+          `
+      <p>We are looking forward to seeing you at the ceremony!</p><br>
+          `,
+          (rsvpData?.numberOfGuest || rsvpData?.email || rsvpData?.vegetarian || rsvpData?.note) ? `
+      <p> Here are your response details:</p>
+          ` : null,
+          rsvpData?.numberOfGuest
+            ? `
+      <p>Number of Guests: ${rsvpData?.numberOfGuest}</p>
+          `
+            : null,
+          rsvpData?.email
+            ? `
+      <p>Email: ${rsvpData?.email}</p>
+          `
+            : null,
+          rsvpData?.vegetarian
+            ? `
+      <p>Vegetarian: ${rsvpData?.vegetarian ? "Yes" : "No"}</p>
+    `
+            : null,
+          rsvpData?.note
+            ? `
+      <p>Note: ${rsvpData?.note}</p>
+          `
+            : null,
+          `
+      <button id="changeAnswer">Change Response</button>
+          `,
+        ];
+        container.innerHTML = wordList.join("");
 
         const changeButton = document.getElementById("changeAnswer");
         changeButton.addEventListener("click", () => {
@@ -169,7 +236,13 @@ const { id } = Astro.params;
     }
 
     // Function to update RSVP in Firebase
-    async function updateRSVP(willJoin, numberOfGuests, guestEmail) {
+    async function updateRSVP(
+      willJoin,
+      numberOfGuests,
+      guestEmail,
+      vegetarian,
+      note
+    ) {
       const uniqueId = id;
       const rsvpRef = ref(db, `rsvps/${uniqueId}`);
       try {
@@ -177,9 +250,17 @@ const { id } = Astro.params;
           willJoin: willJoin,
           numberOfGuest: numberOfGuests,
           email: guestEmail,
+          vegetarian: vegetarian,
+          note: note,
         });
         alert("RSVP updated successfully!");
-        renderRSVPForm({ willJoin, numberOfGuest: numberOfGuests, email: guestEmail });
+        renderRSVPForm({
+          willJoin,
+          numberOfGuest: numberOfGuests,
+          email: guestEmail,
+          vegetarian,
+          note,
+        });
       } catch (error) {
         console.error("Error updating RSVP:", error);
         alert("There was an error updating your RSVP. Please try again.");
@@ -197,7 +278,9 @@ const { id } = Astro.params;
   <div class="md-modal md-effect-12">
     <div class="md-content content-modal">
       <center>
-        <div class="btnstyle whitecolor guestcolor">Dear <span class="guest-pronoun">Mr./Mrs./Ms.</span></div>
+        <div class="btnstyle whitecolor guestcolor">
+          Dear <span class="guest-pronoun">Mr./Mrs./Ms.</span>
+        </div>
         <div class="sectitle guestcolor guest-name" style="font-size: 1.75rem;">
           Guest Name
         </div>
@@ -208,7 +291,8 @@ const { id } = Astro.params;
           Phuoc & Nghi
         </div> -->
       </center>
-      <button class="md-close btnstyle pinkcolor" id="fixedbutton">OPEN INVITATION</button
+      <button class="md-close btnstyle pinkcolor" id="fixedbutton"
+        >OPEN INVITATION</button
       >
     </div>
   </div>
