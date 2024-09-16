@@ -24,7 +24,6 @@ const { id } = Astro.params;
       update,
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    // Firebase configuration (Replace with your actual config)
     const firebaseConfig = {
       apiKey: "AIzaSyCtLpbWHZmZn3dCOILpt7JnWbj-KDqviGs",
 
@@ -199,9 +198,14 @@ const { id } = Astro.params;
           `
       <p>We are looking forward to seeing you at the ceremony!</p><br>
           `,
-          (rsvpData?.numberOfGuest || rsvpData?.email || rsvpData?.vegetarian || rsvpData?.note) ? `
+          rsvpData?.numberOfGuest ||
+          rsvpData?.email ||
+          rsvpData?.vegetarian ||
+          rsvpData?.note
+            ? `
       <p> Here are your response details:</p>
-          ` : null,
+          `
+            : null,
           rsvpData?.numberOfGuest
             ? `
       <p>Number of Guests: ${rsvpData?.numberOfGuest}</p>
@@ -335,9 +339,9 @@ const { id } = Astro.params;
 
               <GallerySection />
 
-              <!-- <WishesToUs /> -->
+              <WishesToUs />
 
-              <!-- <BestWishes /> -->
+              <BestWishes />
             </div>
           </div>
         </div>

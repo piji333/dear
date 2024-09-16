@@ -1,20 +1,16 @@
 <div class="cover rundown" id="wishes">
-  <div class="container" style="position:relative;z-index:2;">
+  <div class="container" style="position:relative;z-index:2;margin-top: 16px;">
     <div class="top-acara"></div>
     <div class="row justify-content-md-center">
       <div class="item-rundown wow animate__animated animate__fadeInUp col-12">
         <h1 class="jusec sectitle item scrollFade">Wishes to Us</h1><br />
-        <form
-          method="POST"
-          action=""
-          class="item scrollFade"
-        >
-          <input type="hidden" name="EVID" value="159" />
+        <div class="item scrollFade">
           <fieldset class="form-group">
             <div>
               <input
+                id="wisherNameInput"
                 type="text"
-                name="NAMA"
+                name="NAME"
                 placeholder="FULL NAME"
                 required="required"
                 aria-required="true"
@@ -28,27 +24,81 @@
           <fieldset class="form-group">
             <div>
               <textarea
+                id="wisherMessageInput"
                 name="MESSAGE"
-                minlength="20"
                 placeholder="WISHES"
                 rows="3"
                 class="form-control btnstyle"
-                minlength="20"
                 required></textarea>
             </div>
           </fieldset>
 
           <div class="b-overlay-wrap position-relative">
             <button
-              type="submit"
-              name="submit"
-              value="wishes"
+              id="sendWishButton"
               style="background:#8c1414;color:#ffe4b6"
               class="btn btn-primary btn-block rounded-pill btnstyle"
               >SEND</button
             >
           </div>
-        </form>
+
+          <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+            import {
+              getDatabase,
+              ref,
+              set,
+              push,
+            } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+            const firebaseConfig = {
+              apiKey: "AIzaSyCtLpbWHZmZn3dCOILpt7JnWbj-KDqviGs",
+
+              authDomain: "dear-21512.firebaseapp.com",
+
+              projectId: "dear-21512",
+
+              storageBucket: "dear-21512.appspot.com",
+
+              messagingSenderId: "722019212853",
+
+              appId: "1:722019212853:web:646c85a21e5d1715015b7c",
+
+              measurementId: "G-GQL33WTE0B",
+
+              databaseURL:
+                "https://dear-21512-default-rtdb.asia-southeast1.firebasedatabase.app",
+            };
+
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const db = getDatabase(app);
+
+            document
+              .getElementById("sendWishButton")
+              .addEventListener("click", async (e) => {
+                e.preventDefault();
+                const nameElement = document.getElementById("wisherNameInput");
+                const messageElement =
+                  document.getElementById("wisherMessageInput");
+
+                const postListRef = ref(db, "posts");
+                const newPostRef = push(postListRef);
+                await set(newPostRef, {
+                  name: nameElement.value,
+                  message: messageElement.value,
+                  isShown: false,
+                  dateTime: new Date().toISOString(),
+                });
+
+                nameElement.value = "";
+                messageElement.value = "";
+
+                alert('Thank you for you wishes! They will appear on our website soon!');
+              });
+
+          </script>
+        </div>
       </div>
     </div>
   </div>

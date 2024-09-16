@@ -1,8 +1,71 @@
+---
+import WishPost from "./WishPost.astro";
+
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, get, update, onValue } from "firebase/database";
+
+// Firebase configuration (Replace with your actual config)
+const firebaseConfig = {
+  apiKey: "AIzaSyCtLpbWHZmZn3dCOILpt7JnWbj-KDqviGs",
+
+  authDomain: "dear-21512.firebaseapp.com",
+
+  projectId: "dear-21512",
+
+  storageBucket: "dear-21512.appspot.com",
+
+  messagingSenderId: "722019212853",
+
+  appId: "1:722019212853:web:646c85a21e5d1715015b7c",
+
+  measurementId: "G-GQL33WTE0B",
+
+  databaseURL:
+    "https://dear-21512-default-rtdb.asia-southeast1.firebasedatabase.app",
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// Function to load posts
+async function loadPosts() {
+  return new Promise((resolve, reject) => {
+    const postsRef = ref(db, "posts");
+    onValue(
+      postsRef,
+      (snapshot) => {
+        const posts = [];
+        snapshot.forEach((childSnapshot) => {
+          const post = childSnapshot.val();
+          posts.push(post);
+        });
+        resolve(posts);
+      },
+      (error) => {
+        reject(error);
+      }
+    );
+  });
+}
+
+// Fetch posts
+const posts: {
+  name: string;
+  message: string;
+  dateTime: string;
+  isShown: boolean;
+}[] = await loadPosts();
+
+posts.sort((a, b) => {
+  return new Date(b.dateTime) - new Date(a.dateTime);
+});
+---
+
 <div class="cover rundown" id="wishes">
   <div class="container" style="position:relative;z-index:2;">
     <div class="top-acara"></div>
     <div class="row justify-content-md-center">
-        
       <div
         class="item-rundownx wow animate__animated animate__fadeInUp col-12"
         style="padding-top:30px"
@@ -10,98 +73,17 @@
         <h1 class="jusec sectitle item scrollFade">Best Wishes</h1>
 
         <div class="cover moment-list">
-
           <div
             style="padding:20px;height:400px;overflow-y: scroll;"
             class="item scrollFade"
           >
-
-            <div
-              class="row"
-              style="border-radius:20px;border:1px solid #ddd;margin-bottom:1em;background:#f7f7f7;padding:10px;color:#000"
-            >
-              <div class="col-pad-left col">
-                <b class="btnstyle">testt</b>
-                <hr />
-                <p class="btnstyle">
-                  <i>&quot;tete aset awet awetaw etawet&quot;</i><br /><br
-                  /><span style="font-size:10px">
-                    May 13, 2024 <span style="padding:5px">|</span> 14:56</span
-                  >
-                </p>
-              </div>
-            </div>
-            <div
-              class="row"
-              style="border-radius:20px;border:1px solid #ddd;margin-bottom:1em;background:#f7f7f7;padding:10px;color:#000"
-            >
-              <div class="col-pad-left col">
-                <b class="btnstyle">test</b>
-                <hr />
-                <p class="btnstyle">
-                  <i>&quot;test a4wetawedta sdf arwe awer&quot;</i><br /><br
-                  /><span style="font-size:10px">
-                    May 13, 2024 <span style="padding:5px">|</span> 14:55</span
-                  >
-                </p>
-              </div>
-            </div>
-            <div
-              class="row"
-              style="border-radius:20px;border:1px solid #ddd;margin-bottom:1em;background:#f7f7f7;padding:10px;color:#000"
-            >
-              <div class="col-pad-left col">
-                <b class="btnstyle">Natasha & Thomas</b>
-                <hr />
-                <p class="btnstyle">
-                  <i
-                    >&quot;"May all your years ahead be filled with everlasting
-                    joy."&quot;</i
-                  ><br /><br /><span style="font-size:10px">
-                    May 08, 2024 <span style="padding:5px">|</span> 14:48</span
-                  >
-                </p>
-              </div>
-            </div>
-            <div
-              class="row"
-              style="border-radius:20px;border:1px solid #ddd;margin-bottom:1em;background:#f7f7f7;padding:10px;color:#000"
-            >
-              <div class="col-pad-left col">
-                <b class="btnstyle">Natasha & Thomas</b>
-                <hr />
-                <p class="btnstyle">
-                  <i
-                    >&quot;May all your years ahead be filled with everlasting
-                    joy.&quot;</i
-                  ><br /><br /><span style="font-size:10px">
-                    November 23, 2023 <span style="padding:5px">|</span> 12:48</span
-                  >
-                </p>
-              </div>
-            </div>
-            <div
-              class="row"
-              style="border-radius:20px;border:1px solid #ddd;margin-bottom:1em;background:#f7f7f7;padding:10px;color:#000"
-            >
-              <div class="col-pad-left col">
-                <b class="btnstyle">Jane & Surya</b>
-                <hr />
-                <p class="btnstyle">
-                  <i
-                    >&quot;We couldn't be happier for you both! Honored to be
-                    part of your special day. Congratulations!&quot;</i
-                  ><br /><br /><span style="font-size:10px">
-                    November 23, 2023 <span style="padding:5px">|</span> 12:47</span
-                  >
-                </p>
-              </div>
-            </div>
-
+            {
+              posts.map((post) =>
+                post?.isShown ? <WishPost {...post} /> : null
+              )
+            }
           </div>
-
         </div>
-
       </div>
     </div>
   </div>

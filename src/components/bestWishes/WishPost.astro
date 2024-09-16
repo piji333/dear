@@ -1,0 +1,56 @@
+---
+const { name, message, dateTime: isoTimeString } = Astro.props as {
+  name: string;
+  message: string;
+  dateTime: string;
+};
+
+const date = new Date(isoTimeString);
+
+const jstOffset = 9 * 60; // JST is UTC + 9 hours
+const jstDate = new Date(date.getTime());
+
+console.log('isoTimeString: ', isoTimeString,);
+console.log('jstDate: ', jstDate,);
+
+const jstStringDate = jstDate.toLocaleString("en-US", {
+  timeZone: "Asia/Tokyo",
+  year: "numeric",
+//   month: "2-digit",
+  month: "short",
+  day: "2-digit",
+//   hour: "2-digit",
+//   minute: "2-digit",
+//   second: "2-digit",
+  hour12: false,
+});
+const jstStringTime = jstDate.toLocaleString("en-US", {
+  timeZone: "Asia/Tokyo",
+//   year: "numeric",
+//   month: "2-digit",
+//   day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+//   second: "2-digit",
+  hour12: false,
+});
+console.log(jstStringDate);
+console.log(jstStringTime);
+---
+
+<div
+  class="row"
+  style="border-radius:20px;border:1px solid #ddd;margin-bottom:1em;background:#f7f7f7;padding:10px;color:#000"
+>
+  <div class="col-pad-left col">
+    <b class="btnstyle">{name}</b>
+    <hr />
+    <p class="btnstyle">
+      <i>&quot;{message}&quot;</i><br /><br /><span
+        style="font-size:10px"
+      >
+        {jstStringDate} <span style="padding:5px">|</span> {jstStringTime}</span
+      >
+    </p>
+  </div>
+</div>
