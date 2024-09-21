@@ -62,7 +62,7 @@ const { id } = Astro.params;
             element.textContent = data.name;
           });
           document.querySelectorAll(".guest-pronoun").forEach((element) => {
-            element.textContent = data.pronoun;
+            element.textContent = ' ' + data.pronoun;
           });
 
           return data;
@@ -283,7 +283,7 @@ const { id } = Astro.params;
     <div class="md-content content-modal">
       <center>
         <div class="btnstyle whitecolor guestcolor">
-          Dear <span class="guest-pronoun">Mr./Mrs./Ms.</span>
+          Dear<span class="guest-pronoun">Mr./Mrs./Ms.</span>
         </div>
         <div class="sectitle guestcolor guest-name" style="font-size: 1.75rem;">
           Guest Name
