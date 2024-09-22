@@ -15,12 +15,13 @@
           <option value="Mr.">Mr.</option>
           <option value="Ms.">Ms.</option>
           <option value="Mrs.">Mrs.</option>
+          <option value="Mrs."></option>
         </select>
         <input
           type="text"
           id="generalGuestName"
           name="generalGuestName"
-          placeholder="Enter your name"
+          placeholder="Full Name"
           class="form-control btnstyle custom-form-control-paddingLeft"
         />
 
@@ -64,23 +65,19 @@
           function renderRSVPForm() {
             const container = document.getElementById("rsvp-container");
             container.innerHTML = `
-      <p>Will you be able to join us for the ceremony?</p>
-      <label>
-        <input type="radio" name="joinEvent" value="true" id="joinYes"> Yes, I will gladly attend!
+      <p>Would you like to join us for the wedding ceremony?</p>
+      <label style="margin-top: 16px">
+        <input type="radio" name="joinEvent" value="true" id="joinYes"> Yes, Delightfully Accepts With Pleasure
       </label><br>
 
-      <label>
-        <input type="radio" name="joinEvent" value="false" id="joinNo"> No, I cannot but send my best wishes!
-      </label><br><br>
-
       <div id="guestsNumberInput" style="display:none;">
-        <label for="guestsInput">Number of Guests:</label><br>
-        <input class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="number" id="guestsInput" min="0" value="0" disabled><br><br>
+        <label for="guestsInput" style="margin-top: 12px">Number of Guests:</label><br>
+        <input class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="number" id="guestsInput" min="0" value="1" disabled><br><br>
       </div>
 
       <div id="guestEmailInput" style="display:none;">
         <label for="guestEmail">Email:</label><br>
-        <input class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="email" id="guestEmail" value="" disabled><br><br>
+        <input class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="email" id="guestEmail" value="" placeholder="Optional Email" disabled><br><br>
       </div>
      
 
@@ -91,7 +88,7 @@
 
       <div id="noteInput" style="display:none;">
         <label for="note">Note:</label><br>
-        <input class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="text" id="note" value="" disabled><br><br>
+        <input class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="text" id="note" value="" placeholder="Optional Note" disabled><br><br>
       </div>
 
 
@@ -145,38 +142,57 @@
             });
 
             submitButton.addEventListener("click", async () => {
-              const willJoinRadioValue = document.querySelector(
-                'input[name="joinEvent"]:checked'
-              ).value;
+              let willJoinRadioValue;
+              try {
+                willJoinRadioValue = document.querySelector(
+                  'input[name="joinEvent"]:checked'
+                ).value;
+              } catch (error) {
+                alert("Please select if you would like to join the event.");
+                throw new Error("Please select if you will join the event.");
+              }
+
               const willJoin = willJoinRadioValue;
               const numberOfGuests = willJoin
                 ? parseInt(guestsInput.value, 10)
                 : 0;
 
-                let rsvpData = {
-                    name: document.getElementById("generalGuestName").value,
-                    pronoun: document.getElementById("generalGuestTitle").value,
-                    willJoin: willJoinRadioValue === "true",
-                    numberOfGuest: numberOfGuests,
-                    email: guestEmail.value || '',
-                    vegetarian: vegetarian.checked || false,
-                    note: note.value || '',
-                };
+              let guestName;
+
+              try {
+                guestName = document.getElementById("generalGuestName").value;
+              } catch (error) {
+                console.error("Error getting guest name: ", error);
+                throw new Error("Guest name is required.");
+              }
+
+              if (!guestName) {
+                alert("Please enter your name.");
+                throw new Error("Guest name is required.");
+              }
+
+              let rsvpData = {
+                name: guestName,
+                pronoun: document.getElementById("generalGuestTitle").value,
+                willJoin: willJoinRadioValue === "true" ? "true" : "false",
+                numberOfGuest: numberOfGuests,
+                email: guestEmail.value || "",
+                vegetarian: vegetarian.checked || false,
+                note: note.value || "",
+              };
 
               // Add new RSVP
-              const rsvpRef = ref(db, "rsvps/");
-              const newRef = push(rsvpRef, rsvpData)
-                .then(() => {
-                  alert("Thank you for your response. We will redirect you to your RSVP page.");
-                })
-                .catch((error) => {
-                  alert("There is an error in sending your response.");
-                  console.error("Error adding RSVP: ", error);
-                });
-
-                console.log(newRef.key);
-                // window.location.href = `/${newRef.key}`;
-                 
+              const rsvpRef = await ref(db, "rsvps/");
+              try {
+                const newRef = await push(rsvpRef, rsvpData);
+                alert(
+                  `Thank you for your response. We will redirect you to your RSVP page.`
+                );
+                window.location.href = `/${newRef.key}`;
+              } catch (error) {
+                alert("There is an error in sending your response.");
+                console.error("Error adding RSVP: ", error);
+              }
             });
           }
 

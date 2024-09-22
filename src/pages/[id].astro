@@ -62,7 +62,11 @@ const { id } = Astro.params;
             element.textContent = data.name;
           });
           document.querySelectorAll(".guest-pronoun").forEach((element) => {
-            element.textContent = ' ' + data.pronoun;
+            if (data.pronoun) {
+              element.textContent = `Dear ${data.pronoun}`;
+            } else {
+              element.textContent = "Dear";
+            }
           });
 
           return data;
@@ -81,34 +85,33 @@ const { id } = Astro.params;
       if (rsvpData.willJoin == null || rsvpData.willJoin == "undefined") {
         // Will join is undecided, show the form to make a decision
         container.innerHTML = `
-      <p>Will you be able to join us for the ceremony?</p>
-      <label>
-        <input type="radio" name="joinEvent" value="true" id="joinYes"> Yes, I will gladly attend!
+      <p>Would you like to join us for the wedding ceremony?</p>
+      <label style="margin-top: 16px">
+        <input type="radio" name="joinEvent" value="true" id="joinYes"> Yes, Delightfully Accepts With Pleasure
       </label><br>
 
       <label>
-        <input type="radio" name="joinEvent" value="false" id="joinNo"> No, I cannot but send my best wishes!
+        <input type="radio" name="joinEvent" value="false" id="joinNo"> No, Declines With Best Wishes
       </label><br><br>
 
       <div id="guestsNumberInput" style="display:none;">
         <label for="guestsInput">Number of Guests:</label><br>
-        <input class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="number" id="guestsInput" min="0" value="${rsvpData?.numberOfGuest || 0}" disabled><br><br>
-      </div>
-
-      <div id="guestEmailInput" style="display:none;">
-        <label for="guestEmail">Email:</label><br>
-        <input class="centerInput"form-control btnstyle custom-form-control-paddingLeft type="email" id="guestEmail" value="${rsvpData?.email || ""}" disabled><br><br>
-      </div>
-     
+        <input class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="number" id="guestsInput" min="0" value="${rsvpData?.numberOfGuest || 1}" disabled><br><br>
+        </div>
 
       <div id="vegetarianInput" style="display:none;">
         <label for="vegetarian">Vegetarian </label>
         <input type="checkbox" id="vegetarian"><br><br>
       </div>
 
+      <div id="guestEmailInput" style="display:none;">
+        <label for="guestEmail">Email:</label><br>
+        <input placeholder="Optional Email" class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="email" id="guestEmail" value="${rsvpData?.email || ""}" disabled><br><br>
+      </div>
+
       <div id="noteInput" style="display:none;">
         <label for="note">Note:</label><br>
-        <input class="centerInput"form-control btnstyle custom-form-control-paddingLeft type="text" id="note" value="${rsvpData?.note || ""}" disabled><br><br>
+        <input placeholder="Optional Note" class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="text" id="note" value="${rsvpData?.note || ""}" disabled><br><br>
       </div>
 
 
@@ -165,24 +168,35 @@ const { id } = Astro.params;
         });
 
         submitButton.addEventListener("click", async () => {
-          const willJoinRadioValue = document.querySelector(
-            'input[name="joinEvent"]:checked'
-          ).value;
+          let willJoinRadioValue;
+          try {
+            willJoinRadioValue = document.querySelector(
+              'input[name="joinEvent"]:checked'
+            ).value;
+          } catch (error) {
+            alert("Please select an option.");
+            throw Error("Please select an option.");
+          }
           const willJoin = willJoinRadioValue;
           const numberOfGuests = willJoin ? parseInt(guestsInput.value, 10) : 0;
-          await updateRSVP(
-            willJoin,
-            numberOfGuests,
-            guestEmail.value,
-            vegetarian.checked,
-            note.value
-          );
+          try {
+            await updateRSVP(
+              willJoin,
+              numberOfGuests,
+              guestEmail.value,
+              vegetarian.checked,
+              note.value
+            );
+          } catch (error) {
+            alert("Please try again.");
+            console.error("Error updating RSVP: ", error.message);
+          }
         });
       } else if (rsvpData.willJoin == "false") {
         // Will not join, show confirmation and option to change answer
         container.innerHTML = `
       <p>Thank you for letting us know you will be cheering for us from afar!</p>
-      <button id="changeAnswer">Change Response</button>
+      <button id="changeAnswer" style="margin-top: 28px">Change Response</button>
     `;
 
         const changeButton = document.getElementById("changeAnswer");
@@ -227,7 +241,7 @@ const { id } = Astro.params;
           `
             : null,
           `
-      <button id="changeAnswer">Change Response</button>
+      <button id="changeAnswer" style="margin-top: 28px">Change Response</button>
           `,
         ];
         container.innerHTML = wordList.join("");
@@ -283,7 +297,7 @@ const { id } = Astro.params;
     <div class="md-content content-modal">
       <center>
         <div class="btnstyle whitecolor guestcolor">
-          Dear<span class="guest-pronoun">Mr./Mrs./Ms.</span>
+          <span class="guest-pronoun">Mr./Mrs./Ms.</span>
         </div>
         <div class="sectitle guestcolor guest-name" style="font-size: 1.75rem;">
           Guest Name
