@@ -72,6 +72,8 @@ const { id } = Astro.params;
           return data;
         } else {
           console.error("No RSVP found with the given unique ID");
+          // redirect to home page if no RSVP found
+          window.location.href = `/`;
         }
       } catch (error) {
         console.error("Error fetching RSVP: ", error.message);
