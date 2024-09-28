@@ -84,40 +84,79 @@ const { id } = Astro.params;
       const container = document.getElementById("rsvp-container");
       container.innerHTML = ""; // Clear existing content
 
-      if (rsvpData.willJoin == null || rsvpData.willJoin == "undefined") {
+      if (
+        rsvpData.willJoinQN === "false" &&
+        rsvpData.willJoin === "false"
+      ) {
+        container.innerHTML = `
+<p>Thank you for your response.</p>
+ <p>We understand that you are unable to attend this time.</p><br>
+ <p>We look forward to the opportunity to see you on a future occasion!</p><br>
+ <button id="changeAnswer" style="margin-top: 16px">Change Response</button>
+  `;
+
+        const changeButton = document.getElementById("changeAnswer");
+        changeButton.addEventListener("click", () => {
+          renderRSVPForm({
+            ...rsvpData,
+            willJoin: null,
+            willJoinQN: null,
+            willJoinOther: null,
+          }); // Reset form
+        });
+      } else if (
+        rsvpData.willJoinQN !== "true" &&
+        rsvpData.willJoin !== "true" &&
+        rsvpData.willJoinOther !== "true"
+      ) {
         // Will join is undecided, show the form to make a decision
         container.innerHTML = `
-      <p>Would you like to join us for the wedding ceremony?</p>
-      <label style="margin-top: 16px">
-        <input type="radio" name="joinEvent" value="true" id="joinYes"> Yes, Delightfully Accept With Pleasure
-      </label><br>
+      <p>Would you like to join and celebrate with us on any of the following dates?</p>
+      
+      <div style="display: flex; justify-content: center;">
+      <div style="margin-top: 16px; text-align: left">
+        <div id="willJoinQNCheckboxInput" >
+          <input type="checkbox" id="willJoinQNCheckbox">
+          <label for="willJoinQNCheckbox">November 8, 2024 in Quang Ngai</label>
+        </div>
+  
+        <div id="willJoinCheckboxInput" style="">
+          <input type="checkbox" id="willJoinCheckbox">
+          <label for="willJoinCheckbox">November 10, 2024 in Da Nang</label>
+        </div>
+  
+        <div id="willJoinOtherCheckboxInput" style="">
+          <input type="checkbox" id="willJoinOtherCheckbox">
+          <label for="willJoinOtherCheckbox">Another time</label>
+        </div>
+      </div>
+      </div>
+      
+      <div id="additionalInfoInput" style="margin-top: 16px; display: none">
+        <div id="guestsNumberInput">
+          <label for="guestsInput">Number of Guests:</label><br>
+          <input class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="number" id="guestsInput" min="0" value="${rsvpData?.numberOfGuest || 1}" disabled>
+          </div>
 
-      <label>
-        <input type="radio" name="joinEvent" value="false" id="joinNo"> No, Will Cheer From Afar Instead
-      </label><br><br>
-
-      <div id="guestsNumberInput" style="display:none;">
-        <label for="guestsInput">Number of Guests:</label><br>
-        <input class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="number" id="guestsInput" min="0" value="${rsvpData?.numberOfGuest || 1}" disabled><br><br>
+        <div id="vegetarianInput" style="margin-top: 8px">
+          <label for="vegetarian">Vegetarian </label>
+          <input type="checkbox" id="vegetarian">
         </div>
 
-      <div id="vegetarianInput" style="display:none;">
-        <label for="vegetarian">Vegetarian </label>
-        <input type="checkbox" id="vegetarian"><br><br>
-      </div>
+        <div id="guestEmailInput" style="">
+          <label for="guestEmail">Email:</label><br>
+          <input placeholder="Optional Email" class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="email" id="guestEmail" value="${rsvpData?.email || ""}" disabled>
+        </div>
 
-      <div id="guestEmailInput" style="display:none;">
-        <label for="guestEmail">Email:</label><br>
-        <input placeholder="Optional Email" class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="email" id="guestEmail" value="${rsvpData?.email || ""}" disabled><br><br>
+        <div id="noteInput" style="">
+          <label for="note">Note:</label><br>
+          <input placeholder="Optional Note" class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="text" id="note" value="${rsvpData?.note || ""}" disabled>
+        </div>
       </div>
-
-      <div id="noteInput" style="display:none;">
-        <label for="note">Note:</label><br>
-        <input placeholder="Optional Note" class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="text" id="note" value="${rsvpData?.note || ""}" disabled><br><br>
       </div>
 
 
-      <button id="submitRSVP">Submit</button>
+      <button id="submitRSVP" style="margin-top: 24px">Submit</button>
     `;
 
         // const joinCheckbox = document.getElementById("joinCheckbox");
@@ -130,60 +169,83 @@ const { id } = Astro.params;
         // checkbox state for vegetarian
         vegetarian.checked = rsvpData?.vegetarian;
 
-        const radioButtons = document.querySelectorAll(
-          'input[name="joinEvent"]'
+        document.getElementById("willJoinQNCheckbox").checked =
+          rsvpData?.willJoinQN === "true";
+        document.getElementById("willJoinCheckbox").checked =
+          rsvpData?.willJoin === "true";
+        document.getElementById("willJoinOtherCheckbox").checked =
+          rsvpData?.willJoinOther === "true";
+
+        const willJoinQNCheckbox =
+          document.getElementById("willJoinQNCheckbox");
+        const willJoinCheckbox = document.getElementById("willJoinCheckbox");
+        const willJoinOtherCheckbox = document.getElementById(
+          "willJoinOtherCheckbox"
         );
 
-        // Add event listener to each radio button
-        radioButtons.forEach((radio) => {
-          radio.addEventListener("change", () => {
-            // Get the selected value
-            const willJoinRadioValue = document.querySelector(
-              'input[name="joinEvent"]:checked'
-            ).value;
+        const controlAdditionalInfoInput = () => {
+          const willJoinQNRadioValue = willJoinQNCheckbox?.checked
+            ? "true"
+            : "false";
+          const willJoinRadioValue = willJoinCheckbox?.checked
+            ? "true"
+            : "false";
+          const willJoinOtherRadioValue = willJoinOtherCheckbox?.checked
+            ? "true"
+            : "false";
 
-            guestsInput.disabled = !(willJoinRadioValue === "true");
-            guestEmail.disabled = !(willJoinRadioValue === "true");
-            vegetarian.disabled = !(willJoinRadioValue === "true");
-            note.disabled = !(willJoinRadioValue === "true");
+          guestsInput.disabled = !(
+            willJoinRadioValue === "true" || willJoinQNRadioValue === "true"
+          );
+          guestEmail.disabled = !(
+            willJoinRadioValue === "true" || willJoinQNRadioValue === "true"
+          );
+          vegetarian.disabled = !(
+            willJoinRadioValue === "true" || willJoinQNRadioValue === "true"
+          );
+          note.disabled = !(
+            willJoinRadioValue === "true" || willJoinQNRadioValue === "true"
+          );
 
-            const guestsNumberInputComponent =
-              document.getElementById("guestsNumberInput");
-            const guestEmailInputComponent =
-              document.getElementById("guestEmailInput");
-            const vegetarianInputComponent =
-              document.getElementById("vegetarianInput");
-            const noteInputComponent = document.getElementById("noteInput");
-            // Toggle visibility based on the boolean value
-            if (willJoinRadioValue === "true") {
-              guestsNumberInputComponent.style.display = "block"; // Show the component
-              guestEmailInputComponent.style.display = "block"; // Show the component
-              vegetarianInputComponent.style.display = "block"; // Show the component
-              noteInputComponent.style.display = "block"; // Show the component
-            } else {
-              guestsNumberInputComponent.style.display = "none"; // Hide the component
-              guestEmailInputComponent.style.display = "none"; // Hide the component
-              vegetarianInputComponent.style.display = "none"; // Hide the component
-              noteInputComponent.style.display = "none"; // Hide the component
-            }
-          });
-        });
+          const additionalInfoInputComponent = document.getElementById(
+            "additionalInfoInput"
+          );
+
+          // Toggle visibility based on the boolean value
+          if (
+            willJoinRadioValue === "true" ||
+            willJoinQNRadioValue === "true"
+          ) {
+            additionalInfoInputComponent.style.display = "block"; // Show the component
+          } else {
+            additionalInfoInputComponent.style.display = "none"; // Hide the component
+          }
+        };
+
+        willJoinCheckbox.addEventListener("change", controlAdditionalInfoInput);
+        willJoinQNCheckbox.addEventListener(
+          "change",
+          controlAdditionalInfoInput
+        );
 
         submitButton.addEventListener("click", async () => {
-          let willJoinRadioValue;
-          try {
-            willJoinRadioValue = document.querySelector(
-              'input[name="joinEvent"]:checked'
-            ).value;
-          } catch (error) {
-            alert("Please select an option.");
-            throw Error("Please select an option.");
-          }
+          const willJoinQNRadioValue = willJoinQNCheckbox?.checked
+            ? "true"
+            : "false";
+          const willJoinRadioValue = willJoinCheckbox?.checked
+            ? "true"
+            : "false";
+          const willJoinOtherRadioValue = willJoinOtherCheckbox?.checked
+            ? "true"
+            : "false";
+
           const willJoin = willJoinRadioValue;
-          const numberOfGuests = willJoin ? parseInt(guestsInput.value, 10) : 0;
+          const numberOfGuests = parseInt(guestsInput.value, 10) || 0;
           try {
             await updateRSVP(
               willJoin,
+              willJoinQNRadioValue,
+              willJoinOtherRadioValue,
               numberOfGuests,
               guestEmail.value,
               vegetarian.checked,
@@ -194,32 +256,28 @@ const { id } = Astro.params;
             console.error("Error updating RSVP: ", error.message);
           }
         });
-      } else if (rsvpData.willJoin == "false") {
-        // Will not join, show confirmation and option to change answer
-        container.innerHTML = `
-      <p>Thank you for letting us know you will be cheering for us from afar!</p>
-      <button id="changeAnswer" style="margin-top: 28px">Change Response</button>
-    `;
-
-        const changeButton = document.getElementById("changeAnswer");
-        changeButton.addEventListener("click", () => {
-          renderRSVPForm({ ...rsvpData, willJoin: null }); // Reset form
-        });
-      } else if (rsvpData.willJoin == "true") {
+      } else {
         // Will join, show confirmation and option to change answer
         const wordList = [
           `
-      <p>Thank you for accepting our invitation. </p>
+      <p>Thank you for accepting our invitation. </p><br>
           `,
+          rsvpData?.willJoinQN === "true"
+            ? `
+      <p>We look forward to seeing you on November 8, 2024 in Quang Ngai!</p><br>
           `
-      <p>We are looking forward to seeing you at the ceremony!</p><br>
-          `,
+            : null,
+          rsvpData?.willJoin === "true"
+            ? `
+      <p>We look forward to seeing you on November 10, 2024 in Da Nang!</p><br>
+          `
+            : null,
           rsvpData?.numberOfGuest ||
           rsvpData?.email ||
           rsvpData?.vegetarian ||
           rsvpData?.note
             ? `
-      <p> Here are your response details:</p>
+      <p> Additional confirmation details:</p>
           `
             : null,
           rsvpData?.numberOfGuest
@@ -250,7 +308,12 @@ const { id } = Astro.params;
 
         const changeButton = document.getElementById("changeAnswer");
         changeButton.addEventListener("click", () => {
-          renderRSVPForm({ ...rsvpData, willJoin: null }); // Reset form
+          renderRSVPForm({
+            ...rsvpData,
+            willJoin: null,
+            willJoinQN: null,
+            willJoinOther: null,
+          }); // Reset form
         });
       }
     }
@@ -258,6 +321,8 @@ const { id } = Astro.params;
     // Function to update RSVP in Firebase
     async function updateRSVP(
       willJoin,
+      willJoinQN,
+      willJoinOther,
       numberOfGuests,
       guestEmail,
       vegetarian,
@@ -268,6 +333,8 @@ const { id } = Astro.params;
       try {
         await update(rsvpRef, {
           willJoin: willJoin,
+          willJoinQN: willJoinQN,
+          willJoinOther: willJoinOther,
           numberOfGuest: numberOfGuests,
           email: guestEmail,
           vegetarian: vegetarian,
@@ -275,7 +342,9 @@ const { id } = Astro.params;
         });
         alert("RSVP updated successfully!");
         renderRSVPForm({
-          willJoin,
+          willJoin: willJoin,
+          willJoinQN: willJoinQN,
+          willJoinOther: willJoinOther,
           numberOfGuest: numberOfGuests,
           email: guestEmail,
           vegetarian,
@@ -304,12 +373,6 @@ const { id } = Astro.params;
         <div class="sectitle guestcolor guest-name" style="font-size: 1.75rem;">
           Guest Name
         </div>
-
-        <!-- <br>
-        <div class='btnstyle whitecolor groombridecolor' >We are delighted to invite you to the wedding of Phuoc & Nghi</div>
-        <div class="sectitle groombridecolor" style="font-size: 2.75rem;">
-          Phuoc & Nghi
-        </div> -->
       </center>
       <button class="md-close btnstyle pinkcolor" id="fixedbutton"
         >OPEN INVITATION</button
