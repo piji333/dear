@@ -5,13 +5,21 @@ import EventSchedule from "../components/eventSchedule/EventSchedule.astro";
 import FrontCover from "../components/frontCover/FrontCover.astro";
 import FrontDecorator from "../components/frontDecorator/FrontDecorator.astro";
 import GallerySection from "../components/gallery/gallerySection/GallerySection.astro";
+import LanguageSelector from "../components/languageSelector/LanguageSelector.astro";
 import RsvpSection from "../components/rsvpSection/RsvpSection.astro";
 import SaveTheDateSection from "../components/saveTheDateSection/SaveTheDateSection.astro";
 import Verse from "../components/verse/Verse.astro";
 import WishesToUs from "../components/wishesToUs/WishesToUs.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import * as m from "../paraglide/messages";
+import { setLanguageTag } from "../paraglide/runtime";
 
 const { id } = Astro.params;
+
+type langType = 'en' | 'vi';
+const lang = (Astro.url.searchParams.get('lang') || 'en') as langType;
+
+setLanguageTag(['en', 'vi'].includes(lang) ? lang : 'en');
 ---
 
 <BaseLayout>
@@ -375,7 +383,7 @@ const { id } = Astro.params;
         </div>
       </center>
       <button class="md-close btnstyle pinkcolor" id="fixedbutton"
-        >OPEN INVITATION</button
+        >{m.open_invitation()}</button
       >
     </div>
   </div>
