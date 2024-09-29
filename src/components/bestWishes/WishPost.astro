@@ -10,9 +10,6 @@ const date = new Date(isoTimeString);
 const jstOffset = 9 * 60; // JST is UTC + 9 hours
 const jstDate = new Date(date.getTime());
 
-console.log('isoTimeString: ', isoTimeString,);
-console.log('jstDate: ', jstDate,);
-
 const jstStringDate = jstDate.toLocaleString("en-US", {
   timeZone: "Asia/Tokyo",
   year: "numeric",
@@ -34,8 +31,6 @@ const jstStringTime = jstDate.toLocaleString("en-US", {
 //   second: "2-digit",
   hour12: false,
 });
-console.log(jstStringDate);
-console.log(jstStringTime);
 ---
 
 <div

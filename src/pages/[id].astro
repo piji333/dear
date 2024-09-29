@@ -5,7 +5,7 @@ import EventSchedule from "../components/eventSchedule/EventSchedule.astro";
 import FrontCover from "../components/frontCover/FrontCover.astro";
 import FrontDecorator from "../components/frontDecorator/FrontDecorator.astro";
 import GallerySection from "../components/gallery/gallerySection/GallerySection.astro";
-import LanguageSelector from "../components/languageSelector/LanguageSelector.astro";
+// import LanguageSelector from "../components/languageSelector/LanguageSelector.astro";
 import RsvpSection from "../components/rsvpSection/RsvpSection.astro";
 import SaveTheDateSection from "../components/saveTheDateSection/SaveTheDateSection.astro";
 import Verse from "../components/verse/Verse.astro";
@@ -16,14 +16,74 @@ import { setLanguageTag } from "../paraglide/runtime";
 
 const { id } = Astro.params;
 
-type langType = 'en' | 'vi';
-const lang = (Astro.url.searchParams.get('lang') || 'en') as langType;
+type langType = "en" | "vi";
+const lang = (Astro.url.searchParams.get("lang") || "en") as langType;
 
-setLanguageTag(['en', 'vi'].includes(lang) ? lang : 'en');
+setLanguageTag(["en", "vi"].includes(lang) ? lang : "en");
+
+const change_response_text = m.change_response();
+const dear_text = m.dear();
+const dear_formal_text = m.dear_formal();
+const thank_you_for_response_text = m.thank_you_for_response();
+const we_understand_you_cannot_come_text = m.we_understand_you_cannot_come();
+const we_look_forward_next_time_text = m.we_look_forward_next_time();
+const would_you_like_to_join_text = m.would_you_like_to_join();
+const quang_ngai_date_text = m.quang_ngai_date();
+const da_nang_date_text = m.da_nang_date();
+const another_time_text = m.another_time();
+const submit_rsvp_text = m.submit_rsvp();
+const number_of_guests_text = m.number_of_guests();
+const vegetarian_text = m.vegetarian();
+const vegetarian_short_text = m.vegetarian_short();
+const optional_email_text = m.optional_email();
+const optional_note_text = m.optional_note();
+const note_text = m.note();
+const thank_you_for_accept_text = m.thank_you_for_accept();
+const see_you_in_quang_ngai_text = m.see_you_in_quang_ngai();
+const see_you_in_da_dang_text = m.see_you_in_da_dang();
+const additional_details_text = m.additional_details();
+const yes_text = m.yes();
+const no_text = m.no();
+const rsvp_text = m.rsvp();
+const rsvp_formal_text = m.rsvp_formal();
 ---
 
 <BaseLayout>
-  <script type="module" define:vars={{ id }}>
+  <script
+    type="module"
+    define:vars={{
+      id,
+      dear_text,
+      dear_formal_text,
+      thank_you_for_response_text,
+      we_understand_you_cannot_come_text,
+      we_look_forward_next_time_text,
+      change_response_text,
+      would_you_like_to_join_text,
+      quang_ngai_date_text,
+      da_nang_date_text,
+      another_time_text,
+      submit_rsvp_text,
+      number_of_guests_text,
+      vegetarian_text,
+
+      vegetarian_short_text,
+
+      optional_email_text,
+      optional_note_text,
+      note_text,
+
+      thank_you_for_accept_text,
+      see_you_in_quang_ngai_text,
+      see_you_in_da_dang_text,
+      additional_details_text,
+      yes_text,
+      no_text,
+
+      rsvp_formal_text,
+      rsvp_text,
+    }}
+  >
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
       getDatabase,
@@ -65,15 +125,20 @@ setLanguageTag(['en', 'vi'].includes(lang) ? lang : 'en');
         if (snapshot.exists()) {
           const data = snapshot.val(); // Get the data
 
+          // change RSVP text based on formality
+          document.querySelectorAll(".rsvpLocaleText").forEach((element) => {
+            element.textContent = data?.formality ? rsvp_formal_text : rsvp_text;
+          });
+
           const nameElements = document.querySelectorAll(".guest-name");
           nameElements.forEach((element) => {
             element.textContent = data.name;
           });
           document.querySelectorAll(".guest-pronoun").forEach((element) => {
-            if (data.pronoun) {
-              element.textContent = `Dear ${data.pronoun}`;
+            if (data?.pronoun && !data?.hidePronounWithName) {
+              element.textContent = `${data?.formality ? dear_formal_text : dear_text} ${data?.pronoun}`;
             } else {
-              element.textContent = "Dear";
+              element.textContent = `${data?.formality ? dear_formal_text : dear_text}`;
             }
           });
 
@@ -92,15 +157,12 @@ setLanguageTag(['en', 'vi'].includes(lang) ? lang : 'en');
       const container = document.getElementById("rsvp-container");
       container.innerHTML = ""; // Clear existing content
 
-      if (
-        rsvpData.willJoinQN === "false" &&
-        rsvpData.willJoin === "false"
-      ) {
+      if (rsvpData?.willJoinQN === "false" && rsvpData?.willJoin === "false") {
         container.innerHTML = `
-<p>Thank you for your response.</p>
- <p>We understand that you are unable to attend this time.</p><br>
- <p>We look forward to the opportunity to see you on a future occasion!</p><br>
- <button id="changeAnswer" style="margin-top: 16px">Change Response</button>
+<p>${thank_you_for_response_text.replace("pronoun_placeholder", rsvpData?.pronoun)}</p>
+ <p>${we_understand_you_cannot_come_text.replace("wePronoun_placeholder", rsvpData?.wePronoun || "Chúng tôi").replace("pronoun_placeholder", rsvpData?.pronoun)}</p><br>
+ <p>${we_look_forward_next_time_text.replace("pronoun_placeholder", rsvpData?.pronoun)}</p><br>
+ <button id="changeAnswer" style="margin-top: 16px">${change_response_text}</button>
   `;
 
         const changeButton = document.getElementById("changeAnswer");
@@ -113,58 +175,58 @@ setLanguageTag(['en', 'vi'].includes(lang) ? lang : 'en');
           }); // Reset form
         });
       } else if (
-        rsvpData.willJoinQN !== "true" &&
-        rsvpData.willJoin !== "true" &&
-        rsvpData.willJoinOther !== "true"
+        rsvpData?.willJoinQN !== "true" &&
+        rsvpData?.willJoin !== "true" &&
+        rsvpData?.willJoinOther !== "true"
       ) {
         // Will join is undecided, show the form to make a decision
         container.innerHTML = `
-      <p>Would you like to join and celebrate with us on any of the following dates?</p>
+      <p>${would_you_like_to_join_text.replace("pronoun_placeholder", rsvpData?.pronoun).replace("wePronoun_placeholder", rsvpData?.wePronoun?.toLowerCase())}</p>
       
       <div style="display: flex; justify-content: center;">
-      <div style="margin-top: 16px; text-align: left">
-        <div id="willJoinQNCheckboxInput" >
+      <div style="margin-top: 16px; text-align: left; padding-left: 4px; padding-right: 4px;">
+        <div id="willJoinQNCheckboxInput" style="display: flex; gap: 8px">
           <input type="checkbox" id="willJoinQNCheckbox">
-          <label for="willJoinQNCheckbox">November 8, 2024 in Quang Ngai</label>
+          <label for="willJoinQNCheckbox">${quang_ngai_date_text}</label>
         </div>
   
-        <div id="willJoinCheckboxInput" style="">
+        <div id="willJoinCheckboxInput" style="display: flex; gap: 8px">
           <input type="checkbox" id="willJoinCheckbox">
-          <label for="willJoinCheckbox">November 10, 2024 in Da Nang</label>
+          <label for="willJoinCheckbox">${da_nang_date_text}</label>
         </div>
   
-        <div id="willJoinOtherCheckboxInput" style="">
+        <div id="willJoinOtherCheckboxInput" style="display: flex; gap: 8px">
           <input type="checkbox" id="willJoinOtherCheckbox">
-          <label for="willJoinOtherCheckbox">Another time</label>
+          <label for="willJoinOtherCheckbox">${another_time_text}</label>
         </div>
       </div>
       </div>
       
       <div id="additionalInfoInput" style="margin-top: 16px; display: none">
         <div id="guestsNumberInput">
-          <label for="guestsInput">Number of Guests:</label><br>
+          <label for="guestsInput">${number_of_guests_text}</label><br>
           <input class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="number" id="guestsInput" min="0" value="${rsvpData?.numberOfGuest || 1}" disabled>
           </div>
 
         <div id="vegetarianInput" style="margin-top: 8px">
-          <label for="vegetarian">Vegetarian </label>
+          <label for="vegetarian">${vegetarian_text.replace("pronoun_placeholder", rsvpData?.pronoun)} </label>
           <input type="checkbox" id="vegetarian">
         </div>
 
         <div id="guestEmailInput" style="">
           <label for="guestEmail">Email:</label><br>
-          <input placeholder="Optional Email" class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="email" id="guestEmail" value="${rsvpData?.email || ""}" disabled>
+          <input placeholder="${optional_email_text}" class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="email" id="guestEmail" value="${rsvpData?.email || ""}" disabled>
         </div>
 
-        <div id="noteInput" style="">
-          <label for="note">Note:</label><br>
-          <input placeholder="Optional Note" class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="text" id="note" value="${rsvpData?.note || ""}" disabled>
+        <div id="noteInput" style="margin-top: 8px;">
+          <label for="note">${note_text}</label><br>
+          <input placeholder="${optional_note_text.replace("wePronoun_placeholder", rsvpData?.wePronoun)}" class="centerInput form-control btnstyle custom-form-control-paddingLeft" type="text" id="note" value="${rsvpData?.note || ""}" disabled>
         </div>
       </div>
       </div>
 
 
-      <button id="submitRSVP" style="margin-top: 24px">Submit</button>
+      <button id="submitRSVP" style="margin-top: 24px">${submit_rsvp_text}</button>
     `;
 
         // const joinCheckbox = document.getElementById("joinCheckbox");
@@ -268,16 +330,16 @@ setLanguageTag(['en', 'vi'].includes(lang) ? lang : 'en');
         // Will join, show confirmation and option to change answer
         const wordList = [
           `
-      <p>Thank you for accepting our invitation. </p><br>
+      <p>${thank_you_for_accept_text.replace("pronoun_placeholder", rsvpData?.pronoun).replace("wePronoun_placeholder", rsvpData?.wePronoun?.toLowerCase())}</p><br>
           `,
           rsvpData?.willJoinQN === "true"
             ? `
-      <p>We look forward to seeing you on November 8, 2024 in Quang Ngai!</p><br>
+      <p>${see_you_in_quang_ngai_text.replace("pronoun_placeholder", rsvpData?.pronoun).replace("wePronoun_placeholder", rsvpData?.wePronoun)}</p><br>
           `
             : null,
           rsvpData?.willJoin === "true"
             ? `
-      <p>We look forward to seeing you on November 10, 2024 in Da Nang!</p><br>
+      <p>${see_you_in_da_dang_text.replace("pronoun_placeholder", rsvpData?.pronoun).replace("wePronoun_placeholder", rsvpData?.wePronoun)}</p><br>
           `
             : null,
           rsvpData?.numberOfGuest ||
@@ -285,12 +347,12 @@ setLanguageTag(['en', 'vi'].includes(lang) ? lang : 'en');
           rsvpData?.vegetarian ||
           rsvpData?.note
             ? `
-      <p> Additional confirmation details:</p>
+      <p>${additional_details_text}</p>
           `
             : null,
           rsvpData?.numberOfGuest
             ? `
-      <p>Number of Guests: ${rsvpData?.numberOfGuest}</p>
+      <p>${number_of_guests_text} ${rsvpData?.numberOfGuest}</p>
           `
             : null,
           rsvpData?.email
@@ -300,16 +362,16 @@ setLanguageTag(['en', 'vi'].includes(lang) ? lang : 'en');
             : null,
           rsvpData?.vegetarian
             ? `
-      <p>Vegetarian: ${rsvpData?.vegetarian ? "Yes" : "No"}</p>
+      <p>${rsvpData?.vegetarian_short_text}: ${rsvpData?.vegetarian ? rsvpData?.yes : rsvpData?.no}</p>
     `
             : null,
           rsvpData?.note
             ? `
-      <p>Note: ${rsvpData?.note}</p>
+      <p>${note_text}: ${rsvpData?.note}</p>
           `
             : null,
           `
-      <button id="changeAnswer" style="margin-top: 28px">Change Response</button>
+      <button id="changeAnswer" style="margin-top: 28px">${change_response_text}</button>
           `,
         ];
         container.innerHTML = wordList.join("");
@@ -348,8 +410,10 @@ setLanguageTag(['en', 'vi'].includes(lang) ? lang : 'en');
           vegetarian: vegetarian,
           note: note,
         });
+        const rsvpData = await fetchRSVPByUniqueId(uniqueId);
         alert("RSVP updated successfully!");
         renderRSVPForm({
+          ...rsvpData,
           willJoin: willJoin,
           willJoinQN: willJoinQN,
           willJoinOther: willJoinOther,
