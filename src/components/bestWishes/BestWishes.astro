@@ -50,19 +50,39 @@ async function loadPosts() {
 }
 
 // Fetch posts
-const posts: {
-  name: string;
-  message: string;
-  dateTime: string;
-  isShown: boolean;
-}[] = await loadPosts();
+// const posts: {
+//   name: string;
+//   message: string;
+//   dateTime: string;
+//   isShown: boolean;
+// }[] = await loadPosts();
+
+import { promises as fs } from 'fs';
+import path from 'path';
+
+
+async function getPostsFromJson() {
+      const filePath = path.join('src/json', 'dearDB.json');
+      const data = await fs.readFile(filePath, 'utf-8');
+      const jsonData = JSON.parse(data);
+      
+      const postsObj =  jsonData.posts;
+
+      const posts = Object.keys(postsObj).map((key) => {
+        return postsObj[key];
+      });
+
+      return posts;
+    }
+
+const posts = await getPostsFromJson();
 
 posts.sort((a, b) => {
   return new Date(b.dateTime) - new Date(a.dateTime);
 });
 ---
 
-<div class="cover rundown" id="wishes">
+<div class="cover rundown" id="wishes" style="margin-top: 16px;">
   <div class="container" style="position:relative;z-index:2;">
     <div class="top-acara"></div>
     <div class="row justify-content-md-center">
