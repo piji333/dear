@@ -57,14 +57,9 @@ async function loadPosts() {
 //   isShown: boolean;
 // }[] = await loadPosts();
 
-import { promises as fs } from 'fs';
-import path from 'path';
-
+import jsonData from '../../json/dearDB.json';
 
 async function getPostsFromJson() {
-      const filePath = path.join('src/json', 'dearDB.json');
-      const data = await fs.readFile(filePath, 'utf-8');
-      const jsonData = JSON.parse(data);
       
       const postsObj =  jsonData.posts;
 

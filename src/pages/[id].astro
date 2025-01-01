@@ -47,14 +47,9 @@ const no_text = m.no();
 const rsvp_text = m.rsvp();
 const rsvp_formal_text = m.rsvp_formal();
 
-import { promises as fs } from 'fs';
-import path from 'path';
+import jsonData from '../json/dearDB.json';
 
 async function getRsvpById(uniqueId) {
-  const filePath = path.join('src/json', 'dearDB.json');
-  const data = await fs.readFile(filePath, 'utf-8');
-  const jsonData = JSON.parse(data);
-  
   return jsonData.rsvps[uniqueId];
 }
 
